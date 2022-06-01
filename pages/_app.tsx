@@ -1,15 +1,16 @@
 import '../styles/globals.css';
 import '../styles/fonts.css';
 import type { AppProps } from 'next/app';
-import Navbar from '../components/Navbar';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../theme';
+import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <Navbar />
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </ThemeProvider>
   );
 }

@@ -6,6 +6,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
   margin: 0 auto;
   align-items: center;
+  width: 1000px;
 `;
 
 interface IProps {
