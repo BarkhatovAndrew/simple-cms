@@ -3,6 +3,7 @@ import { ITheme } from '../../theme';
 
 export const StyledDiv = styled.div`
   width: 1000px;
+  margin: 0 auto;
 `;
 
 export const StyledH1 = styled.h1`

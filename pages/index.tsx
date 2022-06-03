@@ -1,37 +1,61 @@
-import Container from '../components/Container';
-import Header from '../components/Header';
 import PostsList from '../components/PostsList';
 import { GetStaticProps } from 'next';
 import { IPost } from '../helpers/posts';
-import { MongoClient } from 'mongodb';
+import { connectDatabase, findDatabase } from '../helpers/database';
 
 interface IProps {
   posts: IPost[];
+  error?: string;
 }
 
-const HomePage = ({ posts }: IProps) => {
+const HomePage = ({ posts, error }: IProps) => {
+  if (error) {
+    return <p>{error}</p>;
+  }
   return (
-    <Container>
-      <Header />
+    <>
       <PostsList posts={posts} />
-    </Container>
+    </>
   );
 };
 
 export default HomePage;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const client = new MongoClient(
-    'mongodb+srv://andrew:Logitech1994@cluster0.7r57lnf.mongodb.net/?retryWrites=true&w=majority'
-  );
-  await client.connect();
-  const db = client.db('zhaloby');
-  const result = await db.collection('zhaloby').find().toArray();
-  const posts = result.map((item) => ({ ...item, _id: item._id.toJSON() }));
-  await client.close();
-  return {
-    props: {
-      posts,
-    },
-  };
+  let client;
+  let response;
+  try {
+    client = await connectDatabase();
+  } catch (e) {
+    console.log((e as Error).message);
+    return {
+      props: {
+        error: 'Не могу подключиться к базе данных',
+      },
+    };
+  }
+  try {
+    response = await findDatabase(client, 'zhaloby');
+  } catch (e) {
+    console.log((e as Error).message);
+  } finally {
+    await client.close();
+  }
+  if (response) {
+    const posts = response.map((item) => ({
+      ...item,
+      _id: item._id.toJSON(),
+    }));
+    return {
+      props: {
+        posts,
+      },
+    };
+  } else {
+    return {
+      props: {
+        error: 'Нет ответа от базы данных',
+      },
+    };
+  }
 };

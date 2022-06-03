@@ -1,7 +1,9 @@
 import React from 'react';
-import Container from '../../components/Container';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import ReactMarkdown from 'react-markdown';
+import Comments from '../../components/Comments';
 import { MongoClient } from 'mongodb';
+import { connectDatabase, findDatabase } from '../../helpers/database';
 
 interface IProps {
   post: string;
@@ -10,10 +12,11 @@ interface IProps {
 const PostPage = ({ post }: IProps) => {
   const singlePost = JSON.parse(post);
   return (
-    <Container>
+    <>
       <h1>{singlePost.title}</h1>
-      <p>{singlePost.text}</p>
-    </Container>
+      <ReactMarkdown>{singlePost.text}</ReactMarkdown>
+      <Comments />
+    </>
   );
 };
 
@@ -21,8 +24,7 @@ export default PostPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params!.postId;
-  const url =
-    'mongodb+srv://andrew:Logitech1994@cluster0.7r57lnf.mongodb.net/?retryWrites=true&w=majority';
+  const url = process.env.DB_URL as string;
   const client = new MongoClient(url);
   await client.connect();
   const db = client.db('zhaloby');
@@ -37,18 +39,33 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url =
-    'mongodb+srv://andrew:Logitech1994@cluster0.7r57lnf.mongodb.net/?retryWrites=true&w=majority';
-  const client = new MongoClient(url);
-  await client.connect();
-  const db = client.db('zhaloby');
-  const collection = db.collection('zhaloby');
-  const posts = await collection.find().toArray();
-  const paths = posts.map((post) => ({
-    params: { postId: post._id.toJSON() },
-  }));
-  return {
-    paths,
+  const errorReturn = {
+    paths: [],
     fallback: false,
   };
+  let client;
+  let response;
+  try {
+    client = await connectDatabase();
+  } catch (e) {
+    console.log((e as Error).message);
+    return errorReturn;
+  }
+  try {
+    response = await findDatabase(client, 'zhaloby');
+  } catch (e) {
+    console.log((e as Error).message);
+    return errorReturn;
+  }
+  if (response) {
+    const paths = response.map((post) => ({
+      params: { postId: post._id.toJSON() },
+    }));
+    return {
+      paths,
+      fallback: false,
+    };
+  } else {
+    return errorReturn;
+  }
 };

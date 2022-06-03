@@ -4,6 +4,7 @@ export interface ISize {
 
 export interface IColor {
   main: string;
+  secondary: string;
 }
 
 export interface ITheme {
@@ -17,5 +18,6 @@ export const theme: ITheme = {
   },
   color: {
     main: '#404040',
+    secondary: '#ff5c5c',
   },
 };

@@ -1,13 +1,5 @@
 import { FC, ReactNode } from 'react';
-import styled from 'styled-components';
-
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  align-items: center;
-  width: 1000px;
-`;
+import { StyledContainer } from './styles';
 
 interface IProps {
   children: ReactNode;
