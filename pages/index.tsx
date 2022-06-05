@@ -1,7 +1,7 @@
 import PostsList from '../components/PostsList';
 import { GetStaticProps } from 'next';
-import { IPost } from '../helpers/posts';
 import { connectDatabase, findDatabase } from '../helpers/database';
+import { IPost } from '../types/posts';
 
 interface IProps {
   posts: IPost[];
@@ -50,6 +50,7 @@ export const getStaticProps: GetStaticProps = async () => {
       props: {
         posts,
       },
+      revalidate: 3000,
     };
   } else {
     return {

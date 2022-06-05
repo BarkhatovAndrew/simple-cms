@@ -2,20 +2,27 @@ import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import ReactMarkdown from 'react-markdown';
 import Comments from '../../components/Comments';
-import { MongoClient } from 'mongodb';
 import { connectDatabase, findDatabase } from '../../helpers/database';
+import { IComment } from '../../types/comments';
 
 interface IProps {
   post: string;
+  comments: IComment[];
+  error?: string;
 }
 
-const PostPage = ({ post }: IProps) => {
+const PostPage = ({ post, comments, error }: IProps) => {
   const singlePost = JSON.parse(post);
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
   return (
     <>
       <h1>{singlePost.title}</h1>
       <ReactMarkdown>{singlePost.text}</ReactMarkdown>
-      <Comments />
+      <Comments comments={comments} />
     </>
   );
 };
@@ -23,19 +30,32 @@ const PostPage = ({ post }: IProps) => {
 export default PostPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const id = context.params!.postId;
-  const url = process.env.DB_URL as string;
-  const client = new MongoClient(url);
-  await client.connect();
-  const db = client.db('zhaloby');
-  const collection = db.collection('zhaloby');
-  const post = await collection.findOne();
-
-  return {
-    props: {
-      post: JSON.stringify(post),
-    },
-  };
+  try {
+    const id = context.params!.postId;
+    const client = await connectDatabase();
+    const db = client.db('zhaloby');
+    const zhaloby = db.collection('zhaloby');
+    const commentsList = db.collection('comments');
+    const post = await zhaloby.findOne();
+    const comments = await commentsList.find().toArray();
+    return {
+      props: {
+        post: JSON.stringify(post),
+        comments: comments.map((comment) => ({
+          ...comment,
+          _id: comment._id.toJSON(),
+          postId: comment.postId.toJSON(),
+        })),
+      },
+      revalidate: 3000,
+    };
+  } catch (e) {
+    return {
+      props: {
+        error: (e as Error).message,
+      },
+    };
+  }
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

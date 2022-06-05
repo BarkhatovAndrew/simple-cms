@@ -1,5 +1,5 @@
-import { IPost } from '../../helpers/posts';
 import PostElement from '../PostElement';
+import { IPost } from '../../types/posts';
 
 interface IProps {
   posts: IPost[];

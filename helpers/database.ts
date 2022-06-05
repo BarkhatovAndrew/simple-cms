@@ -16,3 +16,12 @@ export const findDatabase = async (
   const db = client.db('zhaloby');
   return await db.collection(collection).find(filter).toArray();
 };
+
+export const insertDatabase = async (
+  client: MongoClient,
+  collection: CollectionType,
+  document: object
+) => {
+  const db = client.db('zhaloby');
+  return await db.collection(collection).insertOne(document);
+};
