@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { IComment } from '../../types/comments';
-import { StyledComment, StyledLeft, StyledRight } from './styles';
+import { StyledComment, StyledRight } from './styles';
 
 interface IProps {
   comment: IComment;
@@ -9,12 +9,12 @@ interface IProps {
 const Index: FC<IProps> = ({ comment }) => {
   return (
     <StyledComment>
-      <StyledLeft>
+      <div>
         <p>
           <strong>{comment.name}</strong>:
         </p>
         <p>{comment.text}</p>
-      </StyledLeft>
+      </div>
       <StyledRight>
         <p>Ответить</p>
       </StyledRight>

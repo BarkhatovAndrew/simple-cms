@@ -4,6 +4,12 @@ import ReactMarkdown from 'react-markdown';
 import Comments from '../../components/CommentsList';
 import { connectDatabase, findDatabase } from '../../helpers/database';
 import { IComment } from '../../types/comments';
+import PostSidebar from '../../components/PostSidebar';
+import {
+  LeftDiv,
+  RightDiv,
+  StyledDiv,
+} from '../../components/PostElement/styles';
 
 interface IProps {
   post: string;
@@ -20,8 +26,15 @@ const PostPage = ({ post, comments, error }: IProps) => {
 
   return (
     <>
-      <h1>{singlePost.title}</h1>
-      <ReactMarkdown>{singlePost.text}</ReactMarkdown>
+      <StyledDiv>
+        <LeftDiv>
+          <PostSidebar post={singlePost} />
+        </LeftDiv>
+        <RightDiv>
+          <h1>{singlePost.title}</h1>
+          <ReactMarkdown>{singlePost.text}</ReactMarkdown>
+        </RightDiv>
+      </StyledDiv>
       <Comments comments={comments} />
     </>
   );
