@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import ReactMarkdown from 'react-markdown';
-import Comments from '../../components/Comments';
+import Comments from '../../components/CommentsList';
 import { connectDatabase, findDatabase } from '../../helpers/database';
 import { IComment } from '../../types/comments';
 
@@ -34,9 +34,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const id = context.params!.postId;
     const client = await connectDatabase();
     const db = client.db('zhaloby');
-    const zhaloby = db.collection('zhaloby');
+    const posts = db.collection('posts');
     const commentsList = db.collection('comments');
-    const post = await zhaloby.findOne();
+    const post = await posts.findOne();
     const comments = await commentsList.find().toArray();
     return {
       props: {
@@ -72,7 +72,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     return errorReturn;
   }
   try {
-    response = await findDatabase(client, 'zhaloby');
+    response = await findDatabase(client, 'posts');
   } catch (e) {
     console.log((e as Error).message);
     return errorReturn;

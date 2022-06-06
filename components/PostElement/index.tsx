@@ -1,7 +1,18 @@
 import Link from 'next/link';
 import { FC } from 'react';
-import { LeftDiv, RightDiv, StyledContent, StyledDiv } from './styles';
+import {
+  CommentsBlock,
+  ImageWrapper,
+  LeftDiv,
+  RightDiv,
+  StyledContent,
+  StyledDiv,
+  StyledTags,
+} from './styles';
 import { IPost } from '../../types/posts';
+import folder from '../../assets/icons/folder.svg';
+import commentLogo from '../../assets/icons/comments.svg';
+import Image from 'next/image';
 
 interface IProps {
   post: IPost;
@@ -14,15 +25,25 @@ const PostElement: FC<IProps> = ({ post }) => {
     <StyledDiv key={post._id}>
       <LeftDiv>
         <p>{date}</p>
-        <p>
-          {tags.map((tag, i) => {
-            if (i !== tags.length - 1) {
-              return <span key={tag}>{tag},</span>;
-            }
-            return <span key={tag}>{tag}</span>;
-          })}
-        </p>
-        <p>0 комментариев</p>
+        <StyledTags>
+          <ImageWrapper>
+            <Image src={folder} alt="folder" layout="responsive" />
+          </ImageWrapper>
+          <p>
+            {tags.map((tag, i) => {
+              if (i !== tags.length - 1) {
+                return <span key={tag}>{tag},</span>;
+              }
+              return <span key={tag}>{tag}</span>;
+            })}
+          </p>
+        </StyledTags>
+        <CommentsBlock>
+          <ImageWrapper>
+            <Image src={commentLogo} alt="comments-logo" layout="responsive" />
+          </ImageWrapper>
+          <p>0 комментариев</p>
+        </CommentsBlock>
       </LeftDiv>
 
       <RightDiv>

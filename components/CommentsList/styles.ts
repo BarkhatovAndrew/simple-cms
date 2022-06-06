@@ -34,3 +34,7 @@ export const StyledForm = styled.form`
     font-family: Tiro, serif;
   }
 `;
+
+export const StyledError = styled.p`
+  color: ${({ theme }) => (theme as ITheme).color.secondary};
+`;

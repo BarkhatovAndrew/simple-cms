@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   }
   try {
-    response = await findDatabase(client, 'zhaloby');
+    response = await findDatabase(client, 'posts');
   } catch (e) {
     console.log((e as Error).message);
   } finally {

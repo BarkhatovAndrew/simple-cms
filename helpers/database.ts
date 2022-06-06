@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-export type CollectionType = 'zhaloby' | 'comments';
+export type CollectionType = 'posts' | 'comments';
 
 export type FilterType = object;
 

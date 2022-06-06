@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 import { ITheme } from '../../theme';
 
-export const StyledLi = styled.li`
-  list-style: none;
-  cursor: pointer;
-`;
-
 export const StyledDiv = styled.div`
   display: flex;
   justify-content: space-between;
@@ -39,15 +34,34 @@ export const RightDiv = styled.div`
 `;
 
 export const LeftDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 28px;
-
-  p {
-    margin: 8px;
-  }
+  margin-top: 20px;
 `;
 
 export const StyledContent = styled.div`
   display: flex;
+`;
+
+export const StyledTags = styled.div`
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin: 20px 0;
+
+  p {
+    margin-left: 6px;
+  }
+`;
+
+export const ImageWrapper = styled.div`
+  width: 20px;
+`;
+
+export const CommentsBlock = styled.div`
+  display: flex;
+  align-items: center;
+  height: 20px;
+
+  p {
+    margin-left: 6px;
+  }
 `;
