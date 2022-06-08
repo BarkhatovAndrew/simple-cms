@@ -21,7 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(response);
     } catch (e) {
       res.status(500).json({ error: (e as Error).message });
-      return;
     }
   }
   if (req.method === 'POST') {

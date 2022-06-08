@@ -7,7 +7,7 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledH1 = styled.h1`
-  font-size: 60px;
+  font-size: ${({ theme }) => (theme as ITheme).size.h1};
   margin: 40px 0 20px;
   text-align: center;
   font-family: Tiro, sans-serif;
@@ -15,7 +15,7 @@ export const StyledH1 = styled.h1`
 `;
 
 export const StyledH2 = styled.h2`
-  font-size: 30px;
+  font-size: ${({ theme }) => (theme as ITheme).size.h2};
   margin-top: 20px;
   text-align: center;
   font-family: Tiro, sans-serif;
@@ -23,5 +23,5 @@ export const StyledH2 = styled.h2`
 `;
 
 export const StyledHr = styled.div`
-  border-bottom: 1px solid #a4a4a4;
+  border-bottom: 1px solid #d4d4d4;
 `;

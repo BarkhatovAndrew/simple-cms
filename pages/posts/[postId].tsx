@@ -5,11 +5,9 @@ import Comments from '../../components/CommentsList';
 import { connectDatabase, findDatabase } from '../../helpers/database';
 import { IComment } from '../../types/comments';
 import PostSidebar from '../../components/PostSidebar';
-import {
-  LeftDiv,
-  RightDiv,
-  StyledDiv,
-} from '../../components/PostElement/styles';
+import { RightDiv, StyledDiv } from '../../components/PostElement/styles';
+import { ObjectId } from 'bson';
+import ShareButtons from '../../components/ShareButtons';
 
 interface IProps {
   post: string;
@@ -27,14 +25,14 @@ const PostPage = ({ post, comments, error }: IProps) => {
   return (
     <>
       <StyledDiv>
-        <LeftDiv>
-          <PostSidebar post={singlePost} />
-        </LeftDiv>
+        <PostSidebar post={singlePost} />
+
         <RightDiv>
           <h1>{singlePost.title}</h1>
           <ReactMarkdown>{singlePost.text}</ReactMarkdown>
         </RightDiv>
       </StyledDiv>
+      <ShareButtons />
       <Comments comments={comments} />
     </>
   );
@@ -50,7 +48,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const posts = db.collection('posts');
     const commentsList = db.collection('comments');
     const post = await posts.findOne();
-    const comments = await commentsList.find().toArray();
+    const comments = await findDatabase(client, 'comments', {
+      postId: new ObjectId(id as string),
+    });
     return {
       props: {
         post: JSON.stringify(post),

@@ -19,7 +19,7 @@ const Comments: FC<IProps> = ({ comments }) => {
   const textRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-  const { data, error } = useSWR('/api/comments', fetcher);
+  const { data } = useSWR('/api/comments', fetcher);
 
   const submitHandler = async (event: FormEvent) => {
     event.preventDefault();

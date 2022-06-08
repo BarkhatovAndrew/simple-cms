@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   CommentsBlock,
   ImageWrapper,
@@ -9,6 +9,8 @@ import Image from 'next/image';
 import folder from '../../assets/icons/folder.svg';
 import commentLogo from '../../assets/icons/comments.svg';
 import { IPost } from '../../types/posts';
+import useSWR from 'swr';
+import axios from 'axios';
 
 interface IProps {
   post: IPost;
@@ -17,6 +19,16 @@ interface IProps {
 const PostSidebar: FC<IProps> = ({ post }) => {
   const date = new Date(post.date).toLocaleDateString('ru-RU');
   const tags = post.tags.split(',');
+  const [commentsCount, setCommentsCount] = useState<number>(0);
+  const fetcher = (url: string) => axios(url).then((res) => res.data);
+  const { data } = useSWR(`/api/comments/${post._id}`, fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setCommentsCount(data.comments.length);
+    }
+  }, [data]);
+
   return (
     <LeftDiv>
       <p>{date}</p>
@@ -37,7 +49,7 @@ const PostSidebar: FC<IProps> = ({ post }) => {
         <ImageWrapper>
           <Image src={commentLogo} alt="comments-logo" layout="responsive" />
         </ImageWrapper>
-        <p>0 комментариев</p>
+        <p>{commentsCount} комментариев</p>
       </CommentsBlock>
     </LeftDiv>
   );

@@ -13,12 +13,12 @@ export const StyledDiv = styled.div`
       color: ${({ theme }) => (theme as ITheme).color.secondary};
     }
   }
+`;
 
-  h2 {
-    font-size: 30px;
-    color: ${({ theme }) => (theme as ITheme).color.secondary};
-    cursor: pointer;
-  }
+export const StyledH2 = styled.h2`
+  font-size: ${({ theme }) => (theme as ITheme).size.h2};
+  color: ${({ theme }) => (theme as ITheme).color.secondary};
+  cursor: pointer;
 `;
 
 export const RightDiv = styled.div`
