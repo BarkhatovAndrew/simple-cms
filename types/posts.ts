@@ -5,4 +5,5 @@ export interface IPost {
   image: string;
   date: Date;
   tags: string;
+  url: string;
 }

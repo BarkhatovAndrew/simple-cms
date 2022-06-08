@@ -6,7 +6,6 @@ import { connectDatabase, findDatabase } from '../../helpers/database';
 import { IComment } from '../../types/comments';
 import PostSidebar from '../../components/PostSidebar';
 import { RightDiv, StyledDiv } from '../../components/PostElement/styles';
-import { ObjectId } from 'bson';
 import ShareButtons from '../../components/ShareButtons';
 
 interface IProps {
@@ -33,23 +32,21 @@ const PostPage = ({ post, comments, error }: IProps) => {
         </RightDiv>
       </StyledDiv>
       <ShareButtons />
-      <Comments comments={comments} />
+      <Comments comments={comments} postId={singlePost._id} />
     </>
   );
 };
 
 export default PostPage;
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   try {
-    const id = context.params!.postId;
     const client = await connectDatabase();
     const db = client.db('zhaloby');
     const posts = db.collection('posts');
-    const commentsList = db.collection('comments');
     const post = await posts.findOne();
     const comments = await findDatabase(client, 'comments', {
-      postId: new ObjectId(id as string),
+      postId: post!._id,
     });
     return {
       props: {
@@ -92,7 +89,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
   if (response) {
     const paths = response.map((post) => ({
-      params: { postId: post._id.toJSON() },
+      params: { postId: post.url },
     }));
     return {
       paths,

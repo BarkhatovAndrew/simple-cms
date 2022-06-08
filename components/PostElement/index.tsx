@@ -14,7 +14,7 @@ const PostElement: FC<IProps> = ({ post }) => {
       <PostSidebar post={post} />
 
       <RightDiv>
-        <Link href={`/posts/${post._id}`}>
+        <Link href={`/posts/${post.url}`}>
           <StyledH2>{post.title}</StyledH2>
         </Link>
         <StyledContent>

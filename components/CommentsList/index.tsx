@@ -2,7 +2,6 @@ import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { StyledError, StyledForm } from './styles';
 import { IComment } from '../../types/comments';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { ObjectId } from 'bson';
 import CommentElement from '../CommentElement';
@@ -10,14 +9,14 @@ import { validateComments } from '../../helpers/validateComments';
 
 interface IProps {
   comments: IComment[];
+  postId: string;
 }
 
-const Comments: FC<IProps> = ({ comments }) => {
+const Comments: FC<IProps> = ({ comments, postId }) => {
   const [commentsList, setCommentsList] = useState<IComment[]>(comments);
   const [errorMsg, setErrorMsg] = useState<null | string>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
   const fetcher = (url: string) => axios.get(url).then((res) => res.data);
   const { data } = useSWR('/api/comments', fetcher);
 
@@ -30,7 +29,7 @@ const Comments: FC<IProps> = ({ comments }) => {
       const response = await axios.post('/api/comments', {
         name,
         text,
-        postId: router.query.postId,
+        postId,
       });
       setCommentsList([
         ...commentsList,
@@ -38,7 +37,7 @@ const Comments: FC<IProps> = ({ comments }) => {
           _id: new ObjectId(response.data.insertedId),
           name: nameRef.current!.value,
           text: textRef.current!.value,
-          postId: router.query.postId,
+          postId: postId,
         },
       ]);
       nameRef.current!.value = '';

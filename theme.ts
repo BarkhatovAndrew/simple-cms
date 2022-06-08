@@ -22,6 +22,6 @@ export const theme: ITheme = {
   },
   color: {
     main: '#404040',
-    secondary: '#ff5c5c',
+    secondary: '#57ad68',
   },
 };
