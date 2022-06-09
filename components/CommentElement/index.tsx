@@ -1,17 +1,19 @@
 import { FC, RefObject } from 'react';
 import { IComment } from '../../types/comments';
 import { StyledComment, StyledRight } from './styles';
+import { ObjectId } from 'bson';
 
 interface IProps {
   comment: IComment;
-  nameRef: RefObject<HTMLInputElement>;
   textRef: RefObject<HTMLTextAreaElement>;
+  setReplyHandler: (reply: ObjectId) => void;
 }
 
-const Index: FC<IProps> = ({ comment, nameRef, textRef }) => {
+const Index: FC<IProps> = ({ comment, textRef, setReplyHandler }) => {
   const replyHandler = () => {
     textRef.current!.value = comment.name + ', ';
     textRef.current!.focus();
+    setReplyHandler(comment._id);
   };
 
   return (

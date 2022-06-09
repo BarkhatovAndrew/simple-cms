@@ -6,7 +6,7 @@ interface IProps {
   name: string;
   text: string;
   postId: ObjectId;
-  replyId?: ObjectId;
+  replyId?: ObjectId | null;
 }
 
 export const sendComment = async ({ name, text, postId, replyId }: IProps) => {
