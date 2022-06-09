@@ -47,3 +47,7 @@ export const StyledForm = styled.form`
 export const StyledError = styled.p`
   color: ${({ theme }) => (theme as ITheme).color.secondary};
 `;
+
+export const StyledWrapper = styled.div`
+  max-width: 500px;
+`;

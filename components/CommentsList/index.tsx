@@ -1,11 +1,11 @@
 import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
-import { StyledError, StyledForm } from './styles';
+import { StyledError, StyledForm, StyledWrapper } from './styles';
 import { IComment } from '../../types/comments';
-import axios from 'axios';
-import useSWR from 'swr';
 import { ObjectId } from 'bson';
 import CommentElement from '../CommentElement';
 import { sendComment } from '../../services/sendComment';
+import axios from 'axios';
+import useSWR from 'swr';
 
 interface IProps {
   comments: IComment[];
@@ -42,6 +42,9 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
     const { response, validateResponse } = await sendComment(sendConfig);
 
     if (response) {
+      await axios.get(
+        `/api/revalidate?secret=${process.env.NEXT_PUBLIC_REVALIDATE_TOKEN}&path=${window.location.pathname}`
+      );
       setCommentsList([
         ...commentsList,
         {
@@ -71,7 +74,7 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
   }, [data]);
 
   return (
-    <div>
+    <StyledWrapper>
       <h3>Комментарии</h3>
       {errorMsg && <StyledError>{errorMsg}</StyledError>}
       <StyledForm onSubmit={submitHandler}>
@@ -81,15 +84,21 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
         <textarea id="text" rows={5} ref={textRef} />
         <button type="submit">Отправить</button>
       </StyledForm>
-      {commentsList.map((comment: IComment) => (
-        <CommentElement
-          key={JSON.stringify(comment._id)}
-          comment={comment}
-          textRef={textRef}
-          setReplyHandler={setReplyHandler}
-        />
-      ))}
-    </div>
+      {commentsList
+        .filter((comment) => !comment.replyId)
+        .map((comment: IComment) => (
+          <CommentElement
+            key={JSON.stringify(comment._id)}
+            comment={comment}
+            replies={comments.filter(
+              (commentEl) =>
+                commentEl.replyId && comment._id === commentEl.replyId
+            )}
+            textRef={textRef}
+            setReplyHandler={setReplyHandler}
+          />
+        ))}
+    </StyledWrapper>
   );
 };
 
