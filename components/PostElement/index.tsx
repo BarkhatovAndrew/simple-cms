@@ -20,7 +20,7 @@ const PostElement: FC<IProps> = ({ post }) => {
         <StyledContent>
           <p>{post.text.slice(0, 500) + '... '}</p>
         </StyledContent>
-        <Link href={`/posts/${post._id}`}>
+        <Link href={`/posts/${post.url}`}>
           <span>Читать далее...</span>
         </Link>
       </RightDiv>

@@ -51,11 +51,21 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         post: JSON.stringify(post),
-        comments: comments.map((comment) => ({
-          ...comment,
-          _id: comment._id.toJSON(),
-          postId: comment.postId.toJSON(),
-        })),
+        comments: comments.map((comment) => {
+          if (comment.replyId) {
+            return {
+              ...comment,
+              _id: comment._id.toJSON(),
+              postId: comment.postId.toJSON(),
+              replyId: comment.replyId.toJSON(),
+            };
+          }
+          return {
+            ...comment,
+            _id: comment._id.toJSON(),
+            postId: comment.postId.toJSON(),
+          };
+        }),
       },
       revalidate: 3000,
     };

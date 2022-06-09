@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import {ITheme} from "../../theme";
 
 export const StyledComment = styled.div`
   display: flex;
@@ -9,4 +10,13 @@ export const StyledComment = styled.div`
 export const StyledRight = styled.div`
   display: flex;
   align-items: flex-end;
+
+  p {
+    cursor: pointer;
+    transition: 100ms;
+
+    &:hover {
+      color: ${({theme}) => (theme as ITheme).color.secondary}
+    }
+  }
 `;

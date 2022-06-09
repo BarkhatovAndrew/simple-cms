@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
   if (req.method === 'POST') {
-    const { name, text, postId } = req.body;
+    const { name, text, postId, replyId } = req.body;
     let client;
     let response;
     try {
@@ -34,11 +34,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
     try {
-      response = await insertDatabase(client, 'comments', {
+      const request: {
+        name: string;
+        text: string;
+        postId: ObjectId;
+        replyId?: ObjectId;
+      } = {
         name,
         text,
         postId: new ObjectId(postId),
-      });
+      };
+      if (replyId) {
+        request.replyId = new ObjectId(replyId);
+      }
+      response = await insertDatabase(client, 'comments', request);
     } catch (e) {
       res.status(500).json({ error: (e as Error).message });
       return;

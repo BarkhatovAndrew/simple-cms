@@ -5,7 +5,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { ObjectId } from 'bson';
 import CommentElement from '../CommentElement';
-import { validateComments } from '../../helpers/validateComments';
+import { sendComment } from '../../services/sendComment';
 
 interface IProps {
   comments: IComment[];
@@ -24,20 +24,22 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
     event.preventDefault();
     const name = nameRef.current!.value;
     const text = textRef.current!.value;
-    const validateResponse = validateComments(name, text);
-    if (validateResponse === 'Сообщение отправлено') {
-      const response = await axios.post('/api/comments', {
-        name,
-        text,
-        postId,
-      });
+
+    const { response, validateResponse } = await sendComment({
+      name,
+      text,
+      postId: new ObjectId(postId),
+    });
+
+    if (response) {
       setCommentsList([
         ...commentsList,
         {
           _id: new ObjectId(response.data.insertedId),
           name: nameRef.current!.value,
           text: textRef.current!.value,
-          postId: postId,
+          postId: new ObjectId(postId),
+          // TODO: добавить replyId сюда
         },
       ]);
       nameRef.current!.value = '';
@@ -65,7 +67,12 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
         <button type="submit">Отправить</button>
       </StyledForm>
       {commentsList.map((comment: IComment) => (
-        <CommentElement key={comment._id} comment={comment} />
+        <CommentElement
+          key={JSON.stringify(comment._id)}
+          comment={comment}
+          nameRef={nameRef}
+          textRef={textRef}
+        />
       ))}
     </div>
   );

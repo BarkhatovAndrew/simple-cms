@@ -1,6 +1,9 @@
+import { ObjectId } from 'bson';
+
 export interface IComment {
-  _id: any;
-  postId: any;
+  _id: ObjectId;
+  postId: ObjectId;
   name: string;
   text: string;
+  replyId?: ObjectId;
 }
