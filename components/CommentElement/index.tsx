@@ -11,6 +11,8 @@ interface IProps {
 }
 
 const Index: FC<IProps> = ({ comment, textRef, setReplyHandler, replies }) => {
+  const date = new Date(comment.date).toLocaleString('ru-RU');
+
   const replyHandler = () => {
     textRef.current!.value = comment.name + ', ';
     textRef.current!.focus();
@@ -27,7 +29,10 @@ const Index: FC<IProps> = ({ comment, textRef, setReplyHandler, replies }) => {
           <p>{comment.text}</p>
         </div>
         <StyledRight>
-          <p onClick={replyHandler}>Ответить</p>
+          <p>{date}</p>
+          <p className="reply-text" onClick={replyHandler}>
+            Ответить
+          </p>
         </StyledRight>
       </StyledComment>
       <Replies>

@@ -4,6 +4,8 @@ import { ITheme } from '../../theme';
 export const StyledDiv = styled.div`
   display: flex;
   justify-content: space-between;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #d2d2d2;
 
   span {
     cursor: pointer;

@@ -7,16 +7,16 @@ import { IComment } from '../../types/comments';
 import PostSidebar from '../../components/PostSidebar';
 import { RightDiv, StyledDiv } from '../../components/PostElement/styles';
 import ShareButtons from '../../components/ShareButtons';
+import { IPost } from '../../types/posts';
+import { ObjectId } from 'bson';
 
 interface IProps {
-  post: string;
+  post: IPost;
   comments: IComment[];
   error?: string;
 }
 
 const PostPage = ({ post, comments, error }: IProps) => {
-  const singlePost = JSON.parse(post);
-
   if (error) {
     return <p>{error}</p>;
   }
@@ -24,15 +24,15 @@ const PostPage = ({ post, comments, error }: IProps) => {
   return (
     <>
       <StyledDiv>
-        <PostSidebar post={singlePost} />
+        <PostSidebar post={post} />
 
         <RightDiv>
-          <h1>{singlePost.title}</h1>
-          <ReactMarkdown>{singlePost.text}</ReactMarkdown>
+          <h1>{post.title}</h1>
+          <ReactMarkdown>{post.text}</ReactMarkdown>
         </RightDiv>
       </StyledDiv>
       <ShareButtons />
-      <Comments comments={comments} postId={singlePost._id} />
+      <Comments comments={comments} postId={new ObjectId(post._id)} />
     </>
   );
 };
@@ -43,29 +43,35 @@ export const getStaticProps: GetStaticProps = async () => {
   try {
     const client = await connectDatabase();
     const db = client.db('zhaloby');
-    const posts = db.collection('posts');
-    const post = await posts.findOne();
+    const post = await db.collection('posts').findOne();
     const comments = await findDatabase(client, 'comments', {
       postId: post!._id,
     });
+    const postProps = {
+      ...post,
+      _id: post!._id.toJSON(),
+    };
+    const commentsProps = comments.map((comment) => {
+      if (comment.replyId) {
+        return {
+          ...comment,
+          _id: comment._id.toJSON(),
+          date: comment.date.toJSON(),
+          postId: comment.postId.toString(),
+          replyId: comment.replyId.toJSON(),
+        };
+      }
+      return {
+        ...comment,
+        _id: comment._id.toJSON(),
+        date: comment.date.toString(),
+        postId: comment.postId.toJSON(),
+      };
+    });
     return {
       props: {
-        post: JSON.stringify(post),
-        comments: comments.map((comment) => {
-          if (comment.replyId) {
-            return {
-              ...comment,
-              _id: comment._id.toJSON(),
-              postId: comment.postId.toJSON(),
-              replyId: comment.replyId.toJSON(),
-            };
-          }
-          return {
-            ...comment,
-            _id: comment._id.toJSON(),
-            postId: comment.postId.toJSON(),
-          };
-        }),
+        post: postProps,
+        comments: commentsProps,
       },
       revalidate: 3000,
     };
@@ -88,13 +94,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   try {
     client = await connectDatabase();
   } catch (e) {
-    console.log((e as Error).message);
     return errorReturn;
   }
   try {
     response = await findDatabase(client, 'posts');
   } catch (e) {
-    console.log((e as Error).message);
     return errorReturn;
   }
   if (response) {

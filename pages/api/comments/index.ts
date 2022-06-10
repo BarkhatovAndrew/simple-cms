@@ -21,6 +21,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(200).json(response);
     } catch (e) {
       res.status(500).json({ error: (e as Error).message });
+    } finally {
+      client.close();
     }
   }
   if (req.method === 'POST') {
@@ -39,9 +41,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         text: string;
         postId: ObjectId;
         replyId?: ObjectId;
+        date: Date;
       } = {
         name,
         text,
+        date: new Date(),
         postId: new ObjectId(postId),
       };
       if (replyId) {
@@ -51,6 +55,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (e) {
       res.status(500).json({ error: (e as Error).message });
       return;
+    } finally {
+      client.close();
     }
     res.status(201).json(response);
   }

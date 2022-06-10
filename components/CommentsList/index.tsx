@@ -6,10 +6,11 @@ import CommentElement from '../CommentElement';
 import { sendComment } from '../../services/sendComment';
 import axios from 'axios';
 import useSWR from 'swr';
+import { forceRevalidate } from '../../services/forceRevalidate';
 
 interface IProps {
   comments: IComment[];
-  postId: string;
+  postId: ObjectId;
 }
 
 const Comments: FC<IProps> = ({ comments, postId }) => {
@@ -42,8 +43,9 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
     const { response, validateResponse } = await sendComment(sendConfig);
 
     if (response) {
-      await axios.get(
-        `/api/revalidate?secret=${process.env.NEXT_PUBLIC_REVALIDATE_TOKEN}&path=${window.location.pathname}`
+      await forceRevalidate(
+        process.env.NEXT_PUBLIC_REVALIDATE_TOKEN!,
+        window.location.pathname
       );
       setCommentsList([
         ...commentsList,
@@ -52,7 +54,8 @@ const Comments: FC<IProps> = ({ comments, postId }) => {
           name: nameRef.current!.value,
           text: textRef.current!.value,
           postId: new ObjectId(postId),
-          // TODO: добавить replyId сюда
+          date: new Date().toLocaleString('ru-RU'),
+          replyId: reply,
         },
       ]);
       nameRef.current!.value = '';

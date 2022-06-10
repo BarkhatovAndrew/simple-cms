@@ -11,6 +11,7 @@ import commentLogo from '../../assets/icons/comments.svg';
 import { IPost } from '../../types/posts';
 import useSWR from 'swr';
 import axios from 'axios';
+import Link from 'next/link';
 
 interface IProps {
   post: IPost;
@@ -39,9 +40,17 @@ const PostSidebar: FC<IProps> = ({ post }) => {
         <p>
           {tags.map((tag, i) => {
             if (i !== tags.length - 1) {
-              return <span key={tag}>{tag},</span>;
+              return (
+                <span key={tag}>
+                  <Link href={`/tags/${tag.trim().toLowerCase()}`}>{tag}</Link>,
+                </span>
+              );
             }
-            return <span key={tag}>{tag}</span>;
+            return (
+              <span key={tag}>
+                <Link href={`/tags/${tag.trim().toLowerCase()}`}>{tag}</Link>
+              </span>
+            );
           })}
         </p>
       </StyledTags>

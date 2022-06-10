@@ -5,5 +5,6 @@ export interface IComment {
   postId: ObjectId;
   name: string;
   text: string;
-  replyId?: ObjectId;
+  replyId?: ObjectId | null;
+  date: Date | string;
 }

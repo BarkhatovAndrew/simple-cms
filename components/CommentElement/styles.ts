@@ -17,15 +17,22 @@ export const StyledComment = styled.div`
 
 export const StyledRight = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: flex-end;
 
-  p {
+  .reply-text {
+    color: ${({ theme }) => (theme as ITheme).color.secondary};
     cursor: pointer;
     transition: 100ms;
 
     &:hover {
-      color: ${({ theme }) => (theme as ITheme).color.secondary};
+      color: green;
     }
+  }
+
+  p {
+    margin: 5px;
   }
 `;
 
